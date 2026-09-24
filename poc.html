@@ -3,10 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Fullscreen Login PoC</title>
+<title>Fullscreen PoC — Simulated Browser UI</title>
+
 <style>
-  * { box-sizing: border-box; }
-  html, body {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
     margin: 0;
     min-height: 100%;
     font-family: Arial, Helvetica, sans-serif;
@@ -16,25 +21,84 @@
 
   body {
     min-height: 100dvh;
+    overflow-x: hidden;
+  }
+
+  /*
+   * Clearly synthetic browser chrome.
+   * This is intentionally labeled as a simulation rather than
+   * attempting to reproduce a real browser's security/address UI.
+   */
+  .browser-chrome {
+    width: 100%;
+    height: 70px;
+    padding: 10px 12px;
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    align-items: center;
+    gap: 12px;
+    background: #f7f5f8;
+  }
+
+  .address-bar {
+    height: 50px;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 17px;
+    border-radius: 27px;
+    background: #e4e1e6;
+    color: #29262b;
+  }
+
+  .simulation-icon {
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    border: 2px solid #555158;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .address-text {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 16px;
+  }
+
+  .browser-actions {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    color: #27232a;
+    white-space: nowrap;
+    font-size: 25px;
+  }
+
+  .tab-icon {
+    width: 23px;
+    height: 23px;
+    border: 2px solid currentColor;
+    border-radius: 5px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    line-height: 1;
   }
 
   .page {
     width: min(100%, 680px);
-    min-height: 100dvh;
+    min-height: calc(100dvh - 70px);
+    margin: 0 auto;
     padding: 48px 42px 36px;
     display: flex;
     flex-direction: column;
-  }
-
-  .top-screenshot {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 0 0 28px;
-    border-radius: 0;
   }
 
   .logo {
@@ -46,7 +110,6 @@
     line-height: 1;
     font-weight: 500;
     letter-spacing: -2px;
-    font-family: Arial, Helvetica, sans-serif;
   }
 
   .logo .blue { color: #4285f4; }
@@ -63,13 +126,6 @@
   .subtitle {
     font-size: 25px;
     margin-bottom: 48px;
-  }
-
-  .notice {
-    font-size: 14px;
-    color: #5f6368;
-    margin: 24px 0;
-    line-height: 1.45;
   }
 
   .field {
@@ -111,9 +167,15 @@
     font-size: 14px;
   }
 
+  .notice {
+    font-size: 14px;
+    color: #5f6368;
+    margin: 24px 0;
+    line-height: 1.45;
+  }
+
   .button-row {
-    margin-top: auto;
-    padding-top: 35px;
+    margin-top: 65px;
     display: flex;
     justify-content: flex-end;
   }
@@ -129,37 +191,102 @@
     cursor: pointer;
   }
 
-  button:active { transform: scale(.98); }
+  button:active {
+    transform: scale(.98);
+  }
 
   .poc {
-    margin-top: 16px;
+    margin-top: 25px;
     color: #777;
     font-size: 12px;
   }
 
   @media (max-width: 520px) {
-    .page { padding: 38px 42px 30px; }
-    h1 { font-size: 40px; }
-    .subtitle { font-size: 23px; }
+    .browser-chrome {
+      height: 68px;
+      padding: 9px 10px;
+      gap: 9px;
+    }
+
+    .address-bar {
+      height: 50px;
+      padding: 0 15px;
+      gap: 10px;
+    }
+
+    .address-text {
+      font-size: 15px;
+    }
+
+    .browser-actions {
+      gap: 13px;
+      font-size: 23px;
+    }
+
+    .page {
+      min-height: calc(100dvh - 68px);
+      padding: 38px 42px 30px;
+    }
+
+    h1 {
+      font-size: 40px;
+    }
+
+    .subtitle {
+      font-size: 23px;
+    }
   }
 </style>
 </head>
+
 <body>
+
+  <!--
+    Synthetic browser chrome for demonstration purposes.
+    It is deliberately labeled as simulated UI.
+  -->
+  <div class="browser-chrome" aria-label="Simulated browser chrome">
+    <div class="address-bar">
+      <span class="simulation-icon" aria-hidden="true">◇</span>
+      <span class="address-text">google.com</span>
+    </div>
+
+    <div class="browser-actions" aria-hidden="true">
+      <span>＋</span>
+      <span class="tab-icon">1</span>
+      <span>⋮</span>
+    </div>
+  </div>
+
   <main class="page">
-    <img class="top-screenshot" src="./fake-address-bar.jpg" alt="Screenshot">
-    <div class="logo" aria-label="Google"><span class="blue">G</span><span class="red">o</span><span class="yellow">o</span><span class="blue">g</span><span class="green">l</span><span class="red">e</span></div>
+
+    <div class="logo" aria-label="Demo logo">
+      <span class="blue">G</span><span class="red">o</span><span class="yellow">o</span><span class="blue">g</span><span class="green">l</span><span class="red">e</span>
+    </div>
 
     <h1>Login</h1>
     <div class="subtitle">Continue to Demo</div>
 
     <form id="loginForm" autocomplete="off">
       <div class="field">
-        <input id="email" name="email" type="text" placeholder=" " autocomplete="off">
+        <input
+          id="email"
+          name="email"
+          type="text"
+          placeholder=" "
+          autocomplete="off"
+        >
         <label for="email">Email or phone</label>
       </div>
 
       <div class="field">
-        <input id="password" name="password" type="password" placeholder=" " autocomplete="off">
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder=" "
+          autocomplete="off"
+        >
         <label for="password">Password</label>
       </div>
 
@@ -173,39 +300,56 @@
       </div>
     </form>
 
-    <div class="poc">Fullscreen tossing / exit demonstration</div>
+    <div class="poc">
+      Unsafe fullscreen tossing on mobile firefox
+    </div>
+
   </main>
 
 <script>
-  // Enter fullscreen after the page is loaded. Some mobile browsers may
-  // require a user gesture, so failure here is intentionally ignored.
+  /*
+   * Fullscreen demonstration.
+   * Browsers commonly require a user gesture for fullscreen, so this
+   * initial request may be rejected and is intentionally ignored.
+   */
   async function enterFullscreen() {
     try {
-      if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      if (
+        !document.fullscreenElement &&
+        document.documentElement.requestFullscreen
+      ) {
         await document.documentElement.requestFullscreen();
       }
-    } catch (e) {
-      console.log("Fullscreen request was rejected:", e);
+    } catch (error) {
+      console.log("Fullscreen request was rejected:", error);
     }
   }
 
-  // Try once on load for the PoC.
   window.addEventListener("load", enterFullscreen);
 
-  document.getElementById("loginForm").addEventListener("submit", async function (event) {
+  /*
+   * Demonstration only:
+   * - prevent form submission
+   * - do not transmit or persist the entered values
+   * - exit fullscreen after the user interaction
+   */
+  document.getElementById("loginForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    // Demonstration only: do not collect, transmit, or persist credentials.
     try {
-      if (document.fullscreenElement && document.exitFullscreen) {
+      if (
+        document.fullscreenElement &&
+        document.exitFullscreen
+      ) {
         await document.exitFullscreen();
       }
-    } catch (e) {
-      console.log("Fullscreen exit failed:", e);
+    } catch (error) {
+      console.log("Fullscreen exit failed:", error);
     }
 
     alert("Exit fullscreen");
   });
 </script>
+
 </body>
-</html>    
+</html>
