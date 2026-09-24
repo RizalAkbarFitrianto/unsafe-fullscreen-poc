@@ -1,2 +1,2 @@
-# rx4idn.github.io
+# POC
 Unsafe fullscreen notification on Firefox android browser
